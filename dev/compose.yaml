@@ -14,7 +14,7 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
     networks:
-      - monitoring
+      - server-side
 
   prometheus:
     image: prom/prometheus:v2.53.4 # if error use prom/prometheus:v2.40.0
@@ -38,10 +38,10 @@ services:
       - '--storage.tsdb.wal-compression'         # Compress write-ahead log
       - '--web.enable-lifecycle'                 # Enable runtime reloading
     networks:
-      - monitoring
+      - server-side
 
   node-exporter:
-    image: prom/node-exporter:latest
+    image: prom/node-exporter:v1.9.1
     container_name: node-exporter
     volumes:
       - /proc:/host/proc:ro
@@ -57,11 +57,11 @@ services:
     ports:
       - "9100:9100"
     networks:
-      - monitoring
+      - server-side
     restart: unless-stopped
 
   cadvisor:
-    image: gcr.io/cadvisor/cadvisor:latest
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
     container_name: cadvisor
     volumes:
       - /:/rootfs:ro
@@ -73,11 +73,11 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - monitoring
+      - server-side
     restart: unless-stopped
 
   alertmanager:
-    image: prom/alertmanager:latest
+    image: prom/alertmanager:v0.28.1
     container_name: alertmanager
     volumes:
       - ./alertmanager:/etc/alertmanager
@@ -87,7 +87,7 @@ services:
     ports:
       - "9093:9093"
     networks:
-      - monitoring
+      - server-side
     restart: unless-stopped
 
   majestic-service:
@@ -96,9 +96,17 @@ services:
       dockerfile: ./Dockerfile
       target: final
     container_name: majestic-service
+    environment:
+      - ADDRESS=0.0.0.0:55000
+      - PG_DBNAME=postgres
+      - PG_HOST=postgres
+      - PG_USER=postgres
+      - PG_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "55000:55000"
     restart: unless-stopped
+    networks:
+      - server-side
 
   live-chat-service:
     build:
@@ -109,13 +117,48 @@ services:
     ports:
       - "55001:55001"
     restart: unless-stopped
+    networks:
+      - server-side
+
+  localstack:
+    container_name: "${LOCALSTACK_DOCKER_NAME:-localstack-main}"
+    image: localstack/localstack:4.5.0
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - PERSISTENCE=1 # No PERSISTENCE for localstack free tier, so it won't work
+    volumes:
+      # - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - localstack-data:/var/lib/localstack
+      - ./scripts/localstack/init.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    restart: unless-stopped
+    networks:
+      - server-side
+  
+  postgres:
+    container_name: "postgres"
+    image: postgres@sha256:6cf6142afacfa89fb28b894d6391c7dcbf6523c33178bdc33e782b3b533a9342
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks: 
+      - server-side
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
 
 volumes:
   grafana_storage: {}
   prometheus_storage: {}
+  postgres-data: {}
+  localstack-data: {}
 
 networks:
-  monitoring:
+  server-side:
     driver: bridge
 
 
