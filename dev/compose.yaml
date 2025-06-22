@@ -100,6 +100,16 @@ services:
       - "55000:55000"
     restart: unless-stopped
 
+  live-chat-service:
+    build:
+      context: ../backend/live-chat-service
+      dockerfile: ./Dockerfile
+      target: final
+    container_name: live-chat-service
+    ports:
+      - "55001:55001"
+    restart: unless-stopped
+
 volumes:
   grafana_storage: {}
   prometheus_storage: {}

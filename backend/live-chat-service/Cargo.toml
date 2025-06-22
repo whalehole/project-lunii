@@ -1,0 +1,3 @@
+[workspace]
+members=["live-chat-service"]
+resolver = "3"
