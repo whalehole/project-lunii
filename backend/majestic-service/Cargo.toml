@@ -1,2 +1,2 @@
 [workspace]
-members = ["api", "auth", "user"]
+members = ["majestic-service", "auth", "user"]
