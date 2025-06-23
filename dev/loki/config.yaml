@@ -1,0 +1,29 @@
+auth_enabled: false
+server:
+  http_listen_port: 3100
+common:
+  path_prefix: /loki
+  storage:
+    s3: 
+      endpoint: http://localstack:4566
+      bucketnames: elfera-assets
+      region: us-east-1
+      access_key_id: test
+      secret_access_key: test
+      s3forcepathstyle: true
+    # filesystem:
+    #   chunks_directory: /loki/chunks
+    #   rules_directory: /loki/rules
+  replication_factor: 1
+  ring:
+    kvstore:
+      store: inmemory
+schema_config:
+  configs:
+    - from: 2025-06-23
+      object_store: s3
+      store: tsdb
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h

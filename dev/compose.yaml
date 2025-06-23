@@ -151,11 +151,207 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
+  kafka-controller-1:
+    container_name: kafka-controller-1
+    image: apache/kafka:4.0.0
+    environment:
+      - KAFKA_NODE_ID=1
+      - KAFKA_PROCESS_ROLES=controller
+      - KAFKA_LISTENERS=CONTROLLER://:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-controller-1-data:/var/lib/kafka/data
+
+  kafka-controller-2:
+    container_name: kafka-controller-2
+    image: apache/kafka:4.0.0
+    environment:
+      - KAFKA_NODE_ID=2
+      - KAFKA_PROCESS_ROLES=controller
+      - KAFKA_LISTENERS=CONTROLLER://:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-controller-2-data:/var/lib/kafka/data
+
+  kafka-controller-3:
+    container_name: kafka-controller-3
+    image: apache/kafka:4.0.0
+    environment:
+      - KAFKA_NODE_ID=3
+      - KAFKA_PROCESS_ROLES=controller
+      - KAFKA_LISTENERS=CONTROLLER://:9093
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-controller-3-data:/var/lib/kafka/data
+
+  kafka-broker-1:
+    container_name: kafka-broker-1
+    image: apache/kafka:4.0.0
+    ports:
+      - "29092:9092"
+    environment:
+      - KAFKA_NODE_ID=4
+      - KAFKA_PROCESS_ROLES=broker
+      - KAFKA_LISTENERS=PLAINTEXT://:19092,PLAINTEXT_HOST://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-broker-1:19092,PLAINTEXT_HOST://localhost:29092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    depends_on:
+      - kafka-controller-1
+      - kafka-controller-2
+      - kafka-controller-3
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-broker-1-data:/var/lib/kafka/data
+
+  kafka-broker-2:
+    container_name: kafka-broker-2
+    image: apache/kafka:4.0.0
+    ports:
+      - "39092:9092"
+    environment:
+      - KAFKA_NODE_ID=5
+      - KAFKA_PROCESS_ROLES=broker
+      - KAFKA_LISTENERS=PLAINTEXT://:19092,PLAINTEXT_HOST://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-broker-2:19092,PLAINTEXT_HOST://localhost:39092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    depends_on:
+      - kafka-controller-1
+      - kafka-controller-2
+      - kafka-controller-3
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-broker-2-data:/var/lib/kafka/data
+
+  kafka-broker-3:
+    container_name: kafka-broker-3
+    image: apache/kafka:4.0.0
+    ports:
+      - "49092:9092"
+    environment:
+      - KAFKA_NODE_ID=6
+      - KAFKA_PROCESS_ROLES=broker
+      - KAFKA_LISTENERS=PLAINTEXT://:19092,PLAINTEXT_HOST://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-broker-3:19092,PLAINTEXT_HOST://localhost:49092
+      - KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+      - KAFKA_CONTROLLER_LISTENER_NAMES=CONTROLLER
+      - KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      - KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-controller-1:9093,2@kafka-controller-2:9093,3@kafka-controller-3:9093
+      - KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0
+    depends_on:
+      - kafka-controller-1
+      - kafka-controller-2
+      - kafka-controller-3
+    networks: 
+      - server-side
+    restart: unless-stopped
+    volumes:
+      - kafka-broker-3-data:/var/lib/kafka/data
+    
+  redpanda-console:
+    container_name: redpanda-console
+    image: redpandadata/console:v2.8.6
+    ports:
+      - "28080:8080"
+    environment:
+      - KAFKA_BROKERS=kafka-broker-1:19092,kafka-broker-2:19092,kafka-broker-3:19092
+    networks:
+      - server-side
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:3.4.4
+    container_name: loki
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/config.yml
+    volumes:
+      - ./loki/config.yaml:/etc/loki/config.yml
+      - loki-data:/loki
+    networks: 
+      - server-side
+    restart: unless-stopped
+
+  alloy:
+    image: grafana/alloy:v1.9.1
+    container_name: alloy
+    ports:
+      - "12345:12345"
+    volumes:
+      - ./alloy/config.yaml:/etc/alloy/config.alloy
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+      - --config.format=promtail
+    networks: 
+      - server-side
+    restart: unless-stopped
+    depends_on:
+      - loki
+
+  dozzle:
+    image: amir20/dozzle:v8.13
+    container_name: dozzle
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "18080:8080"
+    environment:
+      # Uncomment to enable container actions (stop, start, restart). See https://dozzle.dev/guide/actions
+      - DOZZLE_ENABLE_ACTIONS=true
+      #
+      # Uncomment to allow access to container shells. See https://dozzle.dev/guide/shell
+      - DOZZLE_ENABLE_SHELL=true
+    networks:
+      - server-side
+    restart: unless-stopped
+
+
 volumes:
   grafana_storage: {}
   prometheus_storage: {}
   postgres-data: {}
   localstack-data: {}
+  kafka-controller-1-data: {}
+  kafka-controller-2-data: {}
+  kafka-controller-3-data: {}
+  kafka-broker-1-data: {}
+  kafka-broker-2-data: {}
+  kafka-broker-3-data: {}
+  loki-data: {}
 
 networks:
   server-side:
