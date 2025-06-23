@@ -39,6 +39,10 @@ public class DataStreamJob {
 		// to building Flink applications.
 		final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
 
+		// Minimal pipeline: create a DataStream and print it
+		env.fromSequence(1, 10)
+				.map(x -> "i am here")
+				.print();
 		/*
 		 * Here, you can start creating your execution plan for Flink.
 		 *

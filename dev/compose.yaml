@@ -276,6 +276,44 @@ services:
     restart: unless-stopped
     volumes:
       - kafka-broker-3-data:/var/lib/kafka/data
+
+  flink-jobmanager-1:
+    container_name: flink-jobmanager-1
+    image: apache/flink:2.0.0
+    platform: linux/amd64
+    ports:
+      - "8081:8081"
+    command: standalone-job --job-classname org.projectlunii.DataStreamJob [--job-id <job id>] [--jars /opt/flink/usrlib/dataprocess-1.0-SNAPSHOT.jar] [--allowNonRestoredState] [job arguments]
+    volumes:
+      - ./../data-processing/dataprocess/target/dataprocess-1.0-SNAPSHOT.jar:/opt/flink/usrlib/dataprocess-1.0-SNAPSHOT.jar
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager-1
+        parallelism.default: 2   
+    networks:
+      - server-side
+    restart: unless-stopped
+  
+  flink-taskmanager-1:
+    container_name: flink-taskmanager-1
+    image: apache/flink:2.0.0
+    platform: linux/amd64
+    depends_on:
+      - flink-jobmanager-1
+    command: taskmanager
+    scale: 1
+    volumes:
+      - ./../data-processing/dataprocess/target/dataprocess-1.0-SNAPSHOT.jar:/opt/flink/usrlib/dataprocess-1.0-SNAPSHOT.jar
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: flink-jobmanager-1
+        taskmanager.numberOfTaskSlots: 2
+        parallelism.default: 2  
+    networks:
+      - server-side
+    restart: unless-stopped
     
   redpanda-console:
     container_name: redpanda-console
