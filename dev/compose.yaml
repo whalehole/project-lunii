@@ -377,6 +377,50 @@ services:
       - server-side
     restart: unless-stopped
 
+  spark:
+    image: bitnami/spark:4.0.0
+    container_name: spark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    ports:
+      - "38080:8080"
+    networks:
+      - server-side
+    restart: unless-stopped
+  
+  spark-worker:
+    image: bitnami/spark:4.0.0
+    container_name: spark-worker
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark:7077
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_CORES=1
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+      - SPARK_USER=spark
+    networks:
+      - server-side
+    restart: unless-stopped
+
+  lunii-web-app:
+    build:
+      context: ../lunii-web-app
+      dockerfile: ./Dockerfile
+      target: final
+    environment:
+      NODE_ENV: production
+    ports:
+      - 13000:3000
+    
+
 
 volumes:
   grafana_storage: {}
