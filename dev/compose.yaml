@@ -133,8 +133,10 @@ services:
     volumes:
       # - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - localstack-data:/var/lib/localstack
-      - ./scripts/localstack/init.sh:/etc/localstack/init/ready.d/init-aws.sh
+      - ./localstack/configs/init.sh:/etc/localstack/init/ready.d/init-aws.sh
       - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./localstack/assets:/assets
+      - ./localstack/configs:/configs
     restart: unless-stopped
     networks:
       - server-side

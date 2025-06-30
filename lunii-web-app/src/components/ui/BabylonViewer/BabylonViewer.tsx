@@ -36,7 +36,7 @@ export default function BabylonViewer() {
         light.intensity = 0.7;
 
         ImportMeshAsync(
-            "/models/carlotta.glb",
+            "http://localhost:4566/elfera-assets/3d_models/carlotta.glb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test%2F20250630%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250630T151933Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=52a6ad0fa6ecc0fec47b5aad328aaf0c688882ba1ae8c4c0d599a4594abbec5a",
             scene,
             {
                 pluginExtension: ".glb",
