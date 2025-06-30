@@ -411,6 +411,7 @@ services:
     restart: unless-stopped
 
   lunii-web-app:
+    container_name: lunii-web-app
     build:
       context: ../lunii-web-app
       dockerfile: ./Dockerfile

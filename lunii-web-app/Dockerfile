@@ -11,7 +11,7 @@ ARG NODE_VERSION=24.3.0
 ################################################################################
 # Use node image for base image for all stages.
 FROM node:${NODE_VERSION}-alpine as base
-
+RUN apk add --no-cache libc6-compat
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
@@ -65,9 +65,8 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/.next ./.next
 COPY --from=build /usr/src/app/public ./public
 
-
 # Expose the port that the application listens on.
 EXPOSE 3000
 
 # Run the application.
-CMD npm start
+CMD npm run start
