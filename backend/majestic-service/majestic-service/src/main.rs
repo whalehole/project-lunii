@@ -12,7 +12,7 @@ use majestic_service::{create_tracing_subscriber, health_check_handler, AppState
 use file::application::file_service::FileService;
 use file::FileState;
 use file::api::commands::get_ai_entity_3d_model_handler::get_ai_entity_3d_model;
-use majestic_service::config::{APPLICATION_PORT, AWS_ENDPOINT_URL, AWS_REGION, CORS_ALLOWED_ORIGINS};
+use majestic_service::config::{APPLICATION_PORT, AWS_ENDPOINT_URL, AWS_REGION, AWS_S3_FORCE_PATH_STYLE, CORS_ALLOWED_ORIGINS};
 
 /// The entry point of the application. It handles initialization of configs, variables,
 /// server properties, routing and context.
@@ -37,7 +37,15 @@ async fn main() {
     // initializing services and shared dependencies
     info!("initializing services, shared dependencies, and states");
     let app_state = AppState {};
-    let aws_s3_config = aws_sdk_s3::config::Builder::from(&aws_config).force_path_style(true).build();
+
+    // initializing AWS s3 related configuration
+    let mut s3_config_builder = aws_sdk_s3::config::Builder::from(&aws_config);
+    if AWS_S3_FORCE_PATH_STYLE.as_str() == "true" {
+        s3_config_builder = s3_config_builder.force_path_style(true);
+    } else {
+        s3_config_builder = s3_config_builder.force_path_style(false);
+    }
+    let aws_s3_config = s3_config_builder.build();
     let aws_s3_client = Arc::new(aws_sdk_s3::Client::from_conf(aws_s3_config));
 
     info!("initializing file");
