@@ -35,10 +35,17 @@ export default function BabylonViewer() {
         const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
         light.intensity = 0.7;
 
-        ImportMeshAsync(
-            "http://localhost:4566/elfera-assets/3d_models/carlotta.glb?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=test%2F20250630%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250630T153009Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Signature=5b0f489b6fd0d80e55bac9e1c1f79611f4217326d04d59296a38f51c0dc55ad9",
-            scene,
-        ).then();
+        fetch('http://localhost:55000/file/entity')
+            .then(res => res.text())
+            .then( url => {
+                return ImportMeshAsync(url, scene);
+        })
+            .then();
+
+        // ImportMeshAsync(
+        //     "http://localhost:55000/file/entity",
+        //     scene,
+        // ).then();
 
         engine.runRenderLoop(() => {
             scene.render();

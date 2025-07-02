@@ -6,7 +6,7 @@ ls -l /assets/carlotta.glb
 echo "Initializing LocalStack resources..."
 
 # Create an S3 bucket
-awslocal s3api create-bucket --bucket elfera-assets || true
+awslocal s3api create-bucket --bucket elfera-assets --create-bucket-configuration LocationConstraint=us-west-2 || true
 echo "Created bucket 'elfera-assets'"
 
 # Configure CORS for bucket
