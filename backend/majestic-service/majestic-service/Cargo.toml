@@ -6,3 +6,11 @@ edition = "2024"
 [dependencies]
 auth = { path = "../auth" }
 user = { path = "../user" }
+file = { path = "../file" }
+once_cell.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tokio = { version = "1.45.1", features = ["full"] }
+axum.workspace = true
+tower-http = { version = "0.6.6", features = ["cors"] }
+aws-config = "1.8.0"
