@@ -1,6 +1,6 @@
 'use client'
 
-import {Engine, Scene, Vector3, HemisphericLight, ImportMeshAsync, ArcRotateCamera} from "@babylonjs/core";
+import {Engine, Scene, Vector3, HemisphericLight, ImportMeshAsync, ArcRotateCamera, Database} from "@babylonjs/core";
 import { registerBuiltInLoaders } from "@babylonjs/loaders/dynamic";
 import { useEffect, useRef } from "react";
 import styles from "./BabylonViewer.module.css";
@@ -20,6 +20,9 @@ export default function BabylonViewer() {
         }
 
         const engine = new Engine(canvas);
+        engine.enableOfflineSupport = true;
+        Database.IDBStorageEnabled = true;
+
         const scene = createScene();
 
         const camera = new ArcRotateCamera(
