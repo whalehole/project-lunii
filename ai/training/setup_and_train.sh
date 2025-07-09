@@ -2,9 +2,12 @@
 set -e
 
 # install git, docker, aws cli
-bash ~/install_git.sh || bash ../../scripts/install_git.sh
-bash ~/install_docker.sh || bash ../../scripts/install_docker.sh
-bash ~/install_aws_cli.sh || bash ../../scripts/install_aws_cli.sh
+echo "installing git"
+bash ~/install_git.sh || { echo "failed to install git"; exit 1; }
+echo "installing docker"
+bash ~/install_docker.sh "$SSH_USER" || { echo "failed to install docker"; exit 1; }
+echo "installing aws cli"
+bash ~/install_aws_cli.sh || { echo "failed to install aws cli"; exit 1; }
 
 # git repo url
 REPO_URL=${REPO_URL:-git@github.com:whalehole/project-lunii.git}
@@ -21,7 +24,7 @@ git sparse-checkout set ai # 'ai' is the subfolder
 git checkout
 
 # build docker image
-docker build -t lunii_ai ai/
+#docker build -t lunii_ai ai/
 
 # download model
-docker run lunii_ai python ai/models/download_llm.py || { echo "Error encountered when downloading LLM model"; exit 1; }
+#docker run lunii_ai python ai/models/download_llm.py || { echo "Error encountered when downloading LLM model"; exit 1; }
