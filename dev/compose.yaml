@@ -96,6 +96,7 @@ services:
       dockerfile: ./Dockerfile
       target: final
     container_name: majestic-service
+    image: majestic-service:dev
     environment:
       - APPLICATION_PORT=55000
       - PG_DBNAME=postgres
@@ -121,6 +122,7 @@ services:
       dockerfile: ./Dockerfile
       target: final
     container_name: live-chat-service
+    image: live-chat-service:dev
     ports:
       - "55001:55001"
     restart: unless-stopped
@@ -424,6 +426,7 @@ services:
 
   lunii-web-app:
     container_name: lunii-web-app
+    image: lunii-web-app:dev
     build:
       context: ../lunii-web-app
       dockerfile: ./Dockerfile
@@ -433,7 +436,18 @@ services:
     ports:
       - 13000:3000
     
-
+  lunii-ai:
+    container_name: lunii-ai
+    image: lunii-ai:dev
+    build:
+      context: ../ai
+      dockerfile: ./Dockerfile
+    volumes:
+      - models_storage:/models
+    ports:
+      - 50080:80
+    networks:
+      - server-side
 
 volumes:
   grafana_storage: {}
