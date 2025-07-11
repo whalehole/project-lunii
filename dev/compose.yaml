@@ -443,7 +443,7 @@ services:
       context: ../ai
       dockerfile: ./Dockerfile
     volumes:
-      - models_storage:/models
+      - lunii-ai-storage:/appdata
     ports:
       - 50080:80
     networks:
@@ -461,6 +461,7 @@ volumes:
   kafka-broker-2-data: {}
   kafka-broker-3-data: {}
   loki-data: {}
+  lunii-ai-models-storage: {}
 
 networks:
   server-side:
