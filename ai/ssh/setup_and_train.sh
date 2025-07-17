@@ -30,17 +30,17 @@ git sparse-checkout set ai # 'ai' is the subfolder
 git checkout
 
 # build docker image
-docker build -t lunii_ai:dev ai/
+docker build -t lunii_ai:dev -f ai/script-runner.Dockerfile ai/
 
 # create volume
 docker volume create lunii-ai-storage
 
 # download model
-docker run --rm \
-       --name lunii_ai \
-       -v lunii-ai-storage:/appdata \
-       -e HUGGINGFACE_TOKEN="$HUGGINGFACE_TOKEN" \
-       -e LLM_MODEL_PATH=/appdata/llm_models/lunii_llm \
-       lunii_ai:dev \
-       python models/download_llm.py \
-       || { echo "Error encountered when downloading LLM model"; exit 1; }
+#docker run --rm \
+#       --name lunii_ai \
+#       -v lunii-ai-storage:/appdata \
+#       -e HUGGINGFACE_TOKEN="$HUGGINGFACE_TOKEN" \
+#       -e LLM_MODEL_PATH=/appdata/llm_models/lunii_llm \
+#       lunii_ai:dev \
+#       python models/download_llm.py \
+#       || { echo "Error encountered when downloading LLM model"; exit 1; }

@@ -105,9 +105,9 @@ services:
       - PG_PASSWORD=${POSTGRES_PASSWORD}
       - RUST_LOG=DEBUG
       - CORS_ALLOWED_ORIGINS=${CORS_ALLOWED_ORIGINS}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-      - AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL}
+      - LOCALSTACK_AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - LOCALSTACK_AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - LOCALSTACK_AWS_ENDPOINT_URL=${AWS_ENDPOINT_URL}
       - AWS_REGION=${AWS_REGION}
       - AWS_S3_FORCE_PATH_STYLE=${AWS_S3_FORCE_PATH_STYLE}
     ports:
@@ -441,11 +441,24 @@ services:
     image: lunii-ai:dev
     build:
       context: ../ai
-      dockerfile: ./Dockerfile
+      dockerfile: ./script-runner.Dockerfile
     volumes:
       - lunii-ai-storage:/appdata
     ports:
       - 50080:80
+    networks:
+      - server-side
+
+  jupyter:
+    container_name: jupyter
+    image: jupyter:dev
+    build:
+      context: ../ai
+      dockerfile: ./jupyter.Dockerfile
+    volumes:
+      - ./../ai:/home/jovyan/work/lunii-ai
+    ports:
+      - 8888:8888
     networks:
       - server-side
 
@@ -461,7 +474,7 @@ volumes:
   kafka-broker-2-data: {}
   kafka-broker-3-data: {}
   loki-data: {}
-  lunii-ai-models-storage: {}
+  lunii-ai-storage: {}
 
 networks:
   server-side:
