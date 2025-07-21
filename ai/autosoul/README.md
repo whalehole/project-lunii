@@ -2,7 +2,6 @@
 <div align="center"><img src="_static/img/autosoul-logo.png" alt="Autosoul Logo" style="width:30%; height:auto;"/></div>
 
 # Autosoul Architecture
-------
 
 Autosoul is an Artificial Intelligence architecture designed to create Artificial Lifeforms (ALFs) that can *experience*, *think*, and *pursue*, all of which must impact our reality. 
 

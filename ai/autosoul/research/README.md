@@ -5,7 +5,6 @@
 
 
 # Research Introduction
-------
 
 To build Autosoul Architecture, research must be done to understand the current AI technologies that have been developed, so that no time is wasted reinventing the wheel, and to also deduce whether people have already achieved what we set out to do. But a huge part of it will be dedicated to discovering what is necessary to develop the AI architecture we envision.
 
@@ -15,7 +14,6 @@ Therefore, these will be our key focuses:
 
 - Test and understand Artificial Neural Network (ANN)
 - Find the answer to AI from different starting points
-------
 
 # Research Mess
 
@@ -71,9 +69,7 @@ Is it something you can touch? Or must it be something you can see? My question 
 ## Cycle of Life
 
 ## Artificial Intelligence
-------
 
 # Research Conclusion
-------
 
 # Autosoul
