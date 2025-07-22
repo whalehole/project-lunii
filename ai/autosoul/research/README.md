@@ -44,7 +44,7 @@ Simply put, consciousness is the reason why you can process a spectrum of experi
 
 So, sure, even if consciousness could be defined in this manner, I am aware that it hasn't alluded to why everything is conscious. When I defined what consciousness is to me a while back, it also hasn't hit me that everything is conscious. But before we address that, first, what is 'everything'? What is a 'thing'?
 
-Is it something you can touch? Or must it be something you can see? My question to you is, does it even matter? I understand that most people's first interpretation that comes to mind of a *thing*, a ball for example, is that it looks round and is red. 
+Is it something you can touch? Or must it be something you can see? My question to you is, does it even matter? I understand that most people's first interpretation that comes to mind of a *thing*, a ball for example, is that it looks round and perhaps have a color and texture. You perceive it visually.
 
 ## Experience
 
@@ -56,7 +56,8 @@ Is it something you can touch? Or must it be something you can see? My question 
 
 ## Causality
 
-## Synchronisation (temperature)
+## Synchronisation
+<!-- (temperature) -->
 
 ## Encoding
 
