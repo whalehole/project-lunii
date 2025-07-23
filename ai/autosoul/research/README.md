@@ -29,7 +29,7 @@ In this section, it will document and attempt to explain everything deemed criti
 - [Encoding](#Encoding)
 - [Mathematics](#Mathematics)
 - [Theory of Everything](#Theory-of-Everything)
-- [Cycle of Life](#Cycle-of-Life)
+- [Cycle of Life & Evolution](#Cycle-of-Life-&-Evolution)
 - [Artificial Intelligence](#Artificial-Intelligence)
 
 ## Consciousness
@@ -67,7 +67,7 @@ Is it something you can touch? Or must it be something you can see? My question 
 
 ## Theory of Everything
 
-## Cycle of Life
+## Cycle of Life & Evolution
 
 ## Artificial Intelligence
 

@@ -140,8 +140,8 @@ services:
       - DEBUG=${DEBUG:-0}
       - PERSISTENCE=1 # No PERSISTENCE for localstack free tier, so it won't work
       - AWS_DEFAULT_REGION=${AWS_REGION}
-      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_ACCESS_KEY_ID=${LOCALSTACK_AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${LOCALSTACK_AWS_SECRET_ACCESS_KEY}
     volumes:
       # - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - localstack-data:/var/lib/localstack
