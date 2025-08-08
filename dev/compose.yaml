@@ -434,7 +434,7 @@ services:
     environment:
       NODE_ENV: production
     ports:
-      - 13000:3000
+      - "13000:3000"
     
   lunii-ai:
     container_name: lunii-ai
@@ -445,7 +445,7 @@ services:
     volumes:
       - lunii-ai-storage:/appdata
     ports:
-      - 50080:80
+      - "50080:80"
     networks:
       - server-side
 
@@ -458,7 +458,7 @@ services:
     volumes:
       - ./../ai:/home/jovyan/work/lunii-ai
     ports:
-      - 8888:8888
+      - "8888:8888"
     networks:
       - server-side
 
