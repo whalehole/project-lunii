@@ -9,6 +9,7 @@ mod config;
 pub mod api;
 pub mod application;
 mod domain;
+mod inbound;
 
 /// Loads AWS [`SdkConfig`] from environment variables. Keys it takes from are strictly defined, as
 /// the documentation [<https://docs.aws.amazon.com/sdk-for-rust/latest/dg/credentials.html>] dictates.

@@ -5,7 +5,7 @@ use tracing_subscriber::EnvFilter;
 
 pub mod config;
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct AppState {}
 
 /// Handles a health check command.

@@ -1,12 +1,12 @@
 [workspace]
-members = ["majestic-service", "auth", "user", "file", "common"]
+members = ["majestic-service", "auth-core", "user-core", "file-core", "common"]
 resolver = "3"
 
 [workspace.dependencies]
 once_cell = "1.21.3"
 tracing = "0.1.41"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
-serde_json = "1.0.140"
+serde_json = "1.0.142"
 axum = "0.8.4"
-aws-sdk-s3 = "1.95.0"
-aws-config = "1.8.1"
+aws-sdk-s3 = "1.102.0"
+aws-config = "1.8.5"
