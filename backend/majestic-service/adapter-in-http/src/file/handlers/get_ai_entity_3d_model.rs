@@ -4,7 +4,6 @@ use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use tracing::debug;
-use crate::FileState;
 
 /// Handles getting presigned url for the AI entity 3D model file
 pub async fn get_ai_entity_3d_model(

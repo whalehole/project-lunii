@@ -1,0 +1,11 @@
+[package]
+name = "adapter-in-http"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+aws-sdk-s3 = "1.94.0"
+aws-config = "1.8.0"

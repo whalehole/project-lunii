@@ -9,9 +9,7 @@ use tokio::net::TcpListener;
 use tower_http::cors::CorsLayer;
 use tracing::info;
 use majestic_service::{create_tracing_subscriber, health_check_handler, AppState};
-use file::application::file_service::FileService;
-use file::FileState;
-use file::api::commands::get_ai_entity_3d_model_handler::get_ai_entity_3d_model;
+use file_core::FileState;
 use majestic_service::config::{APPLICATION_PORT, AWS_ENDPOINT_URL, AWS_REGION, AWS_S3_FORCE_PATH_STYLE, CORS_ALLOWED_ORIGINS};
 
 /// The entry point of the application. It handles initialization of configs, variables,
@@ -32,7 +30,7 @@ async fn main() {
         .load()
         .await;
     // loading configs for file crate
-    file::init(aws_config.clone()).await;
+    file_core::init(aws_config.clone()).await;
 
     // initializing services and shared dependencies
     info!("initializing services, shared dependencies, and states");
@@ -49,11 +47,11 @@ async fn main() {
     let aws_s3_client = Arc::new(aws_sdk_s3::Client::from_conf(aws_s3_config));
 
     info!("initializing file");
-    let file_service = Arc::new(FileService {});
-    let file_state = FileState {
-        file_service: file_service.clone(),
-        aws_s3_client: aws_s3_client.clone()
-    };
+    // let file_service = Arc::new(FileService {});
+    // let file_state = FileState {
+    //     file_service: file_service.clone(),
+    //     aws_s3_client: aws_s3_client.clone()
+    // };
 
     // initializing server properties
     let listener = TcpListener::bind(format!("0.0.0.0:{}", APPLICATION_PORT.as_str())).await.unwrap();
@@ -64,13 +62,13 @@ async fn main() {
         .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE]);
 
     // initializing routing
-    let file_router = Router::new()
-        .route("/entity", get(get_ai_entity_3d_model))
-        .with_state(file_state);
+    // let file_router = Router::new()
+        // .route("/entity", get(get_ai_entity_3d_model))
+        // .with_state(file_state);
 
     let router = Router::new()
         .route("/api/healthcheck", get(health_check_handler))
-        .nest("/file", file_router)
+        // .nest("/file", file_router)
         .layer(cors)
         .with_state(app_state);
 

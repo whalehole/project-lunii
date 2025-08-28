@@ -10,7 +10,7 @@ file-core = { path = "../file-core" }
 once_cell.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
-tokio = { version = "1.45.1", features = ["full"] }
+tokio.workspace = true
 axum.workspace = true
 tower-http = { version = "0.6.6", features = ["cors"] }
 aws-config.workspace = true
