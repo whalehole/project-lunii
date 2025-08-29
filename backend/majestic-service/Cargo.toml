@@ -1,5 +1,5 @@
 [workspace]
-members = ["majestic-service", "auth-core", "user-core", "file-core", "common", "adapter-in-http", "adapter-out-db-postgres"]
+members = ["majestic-service", "auth-core", "user-core", "file-core", "common", "adapter-in-http", "adapter-out-db-postgres", "ai-core"]
 resolver = "3"
 
 [workspace.dependencies]
@@ -11,3 +11,4 @@ serde_json = "1.0.142"
 axum = "0.8.4"
 aws-sdk-s3 = "1.102.0"
 aws-config = "1.8.5"
+url = "2.5.7"
