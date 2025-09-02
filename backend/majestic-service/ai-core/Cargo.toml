@@ -5,3 +5,5 @@ edition = "2024"
 
 [dependencies]
 url.workspace = true
+thiserror.workspace = true
+uuid.workspace = true
