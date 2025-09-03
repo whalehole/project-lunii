@@ -71,25 +71,65 @@ pub enum Personality {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub struct Height(Metre);
+
+impl Display for Height {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} m", self.0)
+    }
+}
+
+#[derive(Debug, Clone, Error)]
+#[error("Height cannot be negative")]
+pub struct InvalidHeightError(Metre);
+
+impl Height {
+    pub fn new(m: Metre) -> Result<Self, InvalidHeightError> {
+        if m.0 < 0.0 { Err(InvalidHeightError(m)) }
+        else { Ok(Self(m)) }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Weight(Kilogram);
+
+impl Display for Weight {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} kg", self.0)
+    }
+}
+
+#[derive(Debug, Clone, Error)]
+#[error("Weight cannot be negative")]
+pub struct InvalidWeightError(Kilogram);
+
+impl Weight {
+    pub fn new(kg: Kilogram) -> Result<Self, InvalidWeightError> {
+        if kg.0 < 0.0 { Err(InvalidWeightError(kg)) }
+        else { Ok(Self(kg)) }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct AIEntity {
     uuid: Uuid,
     name: Name,
-    height: Metre,
-    weight: Kilogram,
+    height: Height,
+    weight: Weight,
     gender: Gender,
     personality: Personality,
     glb_file_url: Url,
 }
 
 impl AIEntity {
-    pub fn new(uuid: Uuid, name: Name, height: Metre, weight: Kilogram, gender: Gender, personality: Personality, glb_file_url: Url) -> Self {
+    pub fn new(uuid: Uuid, name: Name, height: Height, weight: Weight, gender: Gender, personality: Personality, glb_file_url: Url) -> Self {
         Self { uuid, name, height, weight, gender, personality, glb_file_url }
     }
 
     pub fn uuid(&self) -> &Uuid { &self.uuid }
     pub fn name(&self) -> &Name { &self.name }
-    pub fn height(&self) -> &Metre { &self.height }
-    pub fn weight(&self) -> &Kilogram { &self.weight }
+    pub fn height(&self) -> &Height { &self.height }
+    pub fn weight(&self) -> &Weight { &self.weight }
     pub fn gender(&self) -> &Gender { &self.gender }
     pub fn personality(&self) -> &Personality { &self.personality }
     pub fn glb_file_url(&self) -> &Url { &self.glb_file_url }
@@ -97,8 +137,8 @@ impl AIEntity {
 
 pub struct CreateAIEntityRequest {
     pub name: Name,
-    pub height: Metre,
-    pub weight: Kilogram,
+    pub height: Height,
+    pub weight: Weight,
     pub gender: Gender,
     pub personality: Personality,
     pub glb_file_url: Url,
@@ -108,10 +148,6 @@ pub struct CreateAIEntityRequest {
 pub enum CreateAIEntityError {
     #[error("AI entity with name {name} already exists")]
     Duplicate { name: Name },
-    #[error("AI entity must have a name")]
-    NoName,
-    #[error("AI entity's height cannot be less than zero")]
-    NegativeHeight,
-    #[error("AI entity's weight cannot be less than zero")]
-    NegativeWeight,
+    #[error(transparent)]
+    Unknown(#[from] anyhow::Error),
 }
