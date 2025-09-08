@@ -1,1 +1,1 @@
-mod ai_entity;
+pub mod ai_entity;

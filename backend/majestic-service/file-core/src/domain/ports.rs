@@ -1,2 +1,2 @@
-mod inbound;
-mod outbound;
+mod inb;
+mod outb;

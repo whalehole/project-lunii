@@ -4,3 +4,13 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+ai-core = { path = "../ai-core" }
+tokio.workspace = true
+tokio-postgres = "0.7.13"
+deadpool-postgres = { version = "0.14.1", features = ["rt_tokio_1", "serde"] }
+deadpool = { version = "0.12.3", features = ["managed"] }
+refinery = { version = "0.8.16", features = ["tokio-postgres"] }
+anyhow.workspace = true
+dotenvy.workspace = true
+config.workspace = true
+serde.workspace = true

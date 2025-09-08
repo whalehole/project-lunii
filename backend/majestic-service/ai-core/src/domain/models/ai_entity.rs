@@ -42,7 +42,6 @@ impl Display for Metre {
     }
 }
 
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct Kilogram(f32);
 
@@ -111,7 +110,7 @@ impl Weight {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct AIEntity {
+pub struct AiEntity {
     uuid: Uuid,
     name: Name,
     height: Height,
@@ -121,7 +120,7 @@ pub struct AIEntity {
     glb_file_url: Url,
 }
 
-impl AIEntity {
+impl AiEntity {
     pub fn new(uuid: Uuid, name: Name, height: Height, weight: Weight, gender: Gender, personality: Personality, glb_file_url: Url) -> Self {
         Self { uuid, name, height, weight, gender, personality, glb_file_url }
     }
@@ -133,21 +132,4 @@ impl AIEntity {
     pub fn gender(&self) -> &Gender { &self.gender }
     pub fn personality(&self) -> &Personality { &self.personality }
     pub fn glb_file_url(&self) -> &Url { &self.glb_file_url }
-}
-
-pub struct CreateAIEntityRequest {
-    pub name: Name,
-    pub height: Height,
-    pub weight: Weight,
-    pub gender: Gender,
-    pub personality: Personality,
-    pub glb_file_url: Url,
-}
-
-#[derive(Debug, Error)]
-pub enum CreateAIEntityError {
-    #[error("AI entity with name {name} already exists")]
-    Duplicate { name: Name },
-    #[error(transparent)]
-    Unknown(#[from] anyhow::Error),
 }
