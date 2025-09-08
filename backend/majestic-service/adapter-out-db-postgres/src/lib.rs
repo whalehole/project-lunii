@@ -6,6 +6,10 @@ use serde::Deserialize;
 use tokio_postgres::NoTls;
 
 mod ai;
+mod embedded {
+    use refinery::embed_migrations;
+    embed_migrations!("./migrations");
+}
 
 // pub type PgPool = deadpool_postgres::Pool;
 #[derive(Debug, Clone)]
@@ -18,7 +22,6 @@ impl PgPool {
         self.pool.get().await.with_context(|| "failed to get postgres client from pool")
     }
 }
-
 
 #[derive(Debug, Deserialize)]
 struct Config {
