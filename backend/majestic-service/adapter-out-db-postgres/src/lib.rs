@@ -6,10 +6,6 @@ use serde::Deserialize;
 use tokio_postgres::NoTls;
 
 mod ai;
-mod embedded {
-    use refinery::embed_migrations;
-    embed_migrations!("./migrations");
-}
 
 // pub type PgPool = deadpool_postgres::Pool;
 #[derive(Debug, Clone)]
@@ -39,7 +35,7 @@ impl Config {
 
 pub async fn create_pool_from_env() -> anyhow::Result<PgPool> {
     dotenv().ok();
-    let mut cfg = Config::from_env().with_context(|| "failed to load config")?;
+    let mut cfg = Config::from_env().with_context(|| "failed to load config for deadpool postgres")?;
     cfg.pg.manager = Some(ManagerConfig { recycling_method: RecyclingMethod::Fast });
     let pool = cfg.pg.create_pool(Some(Runtime::Tokio1), NoTls)
         .with_context(|| "couldn't create postgres connection pool")?;

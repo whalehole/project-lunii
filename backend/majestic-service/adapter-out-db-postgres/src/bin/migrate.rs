@@ -1,4 +1,5 @@
 use std::ops::DerefMut;
+use anyhow::Context;
 use adapter_out_db_postgres::create_pool_from_env;
 
 #[tokio::main]
@@ -8,6 +9,7 @@ async fn main() -> anyhow::Result<()>{
     let pg_client = create_pool_from_env().await?
         .get_client().await?
         .deref_mut().deref_mut();
-    migrations::runner().run_async(pg_client).await?;
+    migrations::runner().run_async(pg_client).await
+        .with_context(|| "failed to run postgres database migration")?;
     Ok(())
 }

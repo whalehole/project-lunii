@@ -1,135 +1,112 @@
 use std::fmt::Display;
-use thiserror::Error;
+use indexmap::IndexSet;
+use time::OffsetDateTime;
 use url::Url;
 use uuid::Uuid;
+use crate::domain::models::gender::Gender;
+use crate::domain::models::{Height, NameError, Weight};
+use crate::domain::models::personality::PersonalityId;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Name(String);
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct AiEntityId(Uuid);
 
-#[derive(Debug, Clone, Error)]
-#[error("Name cannot be empty")]
-pub struct NameEmptyError;
+impl AiEntityId {
+    pub fn new(id: Uuid) -> Self { Self(id) }
+}
 
-impl Name {
-    pub fn new(s: &str) -> Result<Self, NameEmptyError> {
-        let trimmed = s.trim();
-        if trimmed.is_empty() {
-            Err(NameEmptyError)
-        } else {
-            Ok(Name(trimmed.to_owned()))
-        }
+impl Display for AiEntityId {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{}", self.0)
     }
 }
 
-impl Display for Name {
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct AiEntityName(String);
+
+impl AiEntityName {
+    pub fn new(name: &str) -> Result<Self, NameError> {
+        let trimmed = name.trim();
+        if trimmed.is_empty() { Err(NameError::Empty) }
+        else { Ok(AiEntityName(trimmed.to_owned())) }
+    }
+}
+
+impl Display for AiEntityName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.0)
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Metre(f32);
-
-impl Metre {
-    pub fn new(m: f32) -> Self {
-        Metre(m)
-    }
-}
-
-impl Display for Metre {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} m", self.0)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Kilogram(f32);
-
-impl Kilogram {
-    pub fn new(k: f32) -> Self {
-        Kilogram(k)
-    }
-}
-
-impl Display for Kilogram {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} kg", self.0)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Gender {
-    Male,
-    Female,
-    Other
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Personality {
-    Playful
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Height(Metre);
-
-impl Display for Height {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} m", self.0)
-    }
-}
-
-#[derive(Debug, Clone, Error)]
-#[error("Height cannot be negative")]
-pub struct InvalidHeightError(Metre);
-
-impl Height {
-    pub fn new(m: Metre) -> Result<Self, InvalidHeightError> {
-        if m.0 < 0.0 { Err(InvalidHeightError(m)) }
-        else { Ok(Self(m)) }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct Weight(Kilogram);
-
-impl Display for Weight {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{} kg", self.0)
-    }
-}
-
-#[derive(Debug, Clone, Error)]
-#[error("Weight cannot be negative")]
-pub struct InvalidWeightError(Kilogram);
-
-impl Weight {
-    pub fn new(kg: Kilogram) -> Result<Self, InvalidWeightError> {
-        if kg.0 < 0.0 { Err(InvalidWeightError(kg)) }
-        else { Ok(Self(kg)) }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct AiEntity {
-    uuid: Uuid,
-    name: Name,
+    id: AiEntityId,
+    name: AiEntityName,
     height: Height,
     weight: Weight,
     gender: Gender,
-    personality: Personality,
+    personalities: IndexSet<PersonalityId>,
     glb_file_url: Url,
+    created_on: OffsetDateTime,
+    last_modified_on: OffsetDateTime
 }
 
 impl AiEntity {
-    pub fn new(uuid: Uuid, name: Name, height: Height, weight: Weight, gender: Gender, personality: Personality, glb_file_url: Url) -> Self {
-        Self { uuid, name, height, weight, gender, personality, glb_file_url }
+    pub fn new(
+        id: AiEntityId,
+        name: AiEntityName,
+        height: Height,
+        weight: Weight,
+        gender: Gender,
+        personalities: IndexSet<PersonalityId>,
+        glb_file_url: Url
+    ) -> Self {
+        let now = OffsetDateTime::now_utc();
+        Self {
+            id,
+            name,
+            height,
+            weight,
+            gender,
+            personalities,
+            glb_file_url,
+            created_on: now,
+            last_modified_on: now
+        }
     }
 
-    pub fn uuid(&self) -> &Uuid { &self.uuid }
-    pub fn name(&self) -> &Name { &self.name }
+    pub fn uuid(&self) -> &AiEntityId { &self.id }
+    pub fn name(&self) -> &AiEntityName { &self.name }
     pub fn height(&self) -> &Height { &self.height }
     pub fn weight(&self) -> &Weight { &self.weight }
     pub fn gender(&self) -> &Gender { &self.gender }
-    pub fn personality(&self) -> &Personality { &self.personality }
+    pub fn personalities(&self) -> &IndexSet<PersonalityId> { &self.personalities }
     pub fn glb_file_url(&self) -> &Url { &self.glb_file_url }
+
+    fn on_modify(&mut self) {
+        self.last_modified_on = OffsetDateTime::now_utc();
+    }
+    pub fn rename(&mut self, new_name: AiEntityName) {
+        self.name = new_name;
+        self.on_modify();
+    }
+    pub fn change_height(&mut self, new_height: Height) {
+        self.height = new_height;
+        self.on_modify();
+    }
+    pub fn change_weight(&mut self, new_weight: Weight) {
+        self.weight = new_weight;
+        self.on_modify();
+    }
+    pub fn change_gender(&mut self, new_gender: Gender) {
+        self.gender = new_gender;
+        self.on_modify();
+    }
+    pub fn change_personalities(&mut self, new_personalities: IndexSet<PersonalityId>) {
+        self.personalities = new_personalities;
+        self.on_modify();
+    }
+    pub fn add_personality(&mut self, personality: PersonalityId) {
+        self.personalities.insert(personality);
+        self.on_modify();
+    }
 }
