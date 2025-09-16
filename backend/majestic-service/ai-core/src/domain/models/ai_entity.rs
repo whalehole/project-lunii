@@ -1,9 +1,9 @@
 use std::fmt::Display;
 use indexmap::IndexSet;
-use time::OffsetDateTime;
+use time::{Date, OffsetDateTime};
 use url::Url;
 use uuid::Uuid;
-use crate::domain::models::gender::Gender;
+use crate::domain::models::gender::GenderId;
 use crate::domain::models::{Height, NameError, Weight};
 use crate::domain::models::personality::PersonalityId;
 
@@ -43,7 +43,8 @@ pub struct AiEntity {
     name: AiEntityName,
     height: Height,
     weight: Weight,
-    gender: Gender,
+    gender: GenderId,
+    birthday: Date,
     personalities: IndexSet<PersonalityId>,
     glb_file_url: Url,
     created_on: OffsetDateTime,
@@ -56,7 +57,8 @@ impl AiEntity {
         name: AiEntityName,
         height: Height,
         weight: Weight,
-        gender: Gender,
+        gender: GenderId,
+        birthday: Date,
         personalities: IndexSet<PersonalityId>,
         glb_file_url: Url
     ) -> Self {
@@ -67,6 +69,7 @@ impl AiEntity {
             height,
             weight,
             gender,
+            birthday,
             personalities,
             glb_file_url,
             created_on: now,
@@ -74,11 +77,12 @@ impl AiEntity {
         }
     }
 
-    pub fn uuid(&self) -> &AiEntityId { &self.id }
+    pub fn id(&self) -> &AiEntityId { &self.id }
     pub fn name(&self) -> &AiEntityName { &self.name }
     pub fn height(&self) -> &Height { &self.height }
     pub fn weight(&self) -> &Weight { &self.weight }
-    pub fn gender(&self) -> &Gender { &self.gender }
+    pub fn gender(&self) -> &GenderId { &self.gender }
+    pub fn birthday(&self) -> &Date { &self.birthday }
     pub fn personalities(&self) -> &IndexSet<PersonalityId> { &self.personalities }
     pub fn glb_file_url(&self) -> &Url { &self.glb_file_url }
 
@@ -97,8 +101,12 @@ impl AiEntity {
         self.weight = new_weight;
         self.on_modify();
     }
-    pub fn change_gender(&mut self, new_gender: Gender) {
+    pub fn change_gender(&mut self, new_gender: GenderId) {
         self.gender = new_gender;
+        self.on_modify();
+    }
+    pub fn change_birthday(&mut self, new_birthday: Date) {
+        self.birthday = new_birthday;
         self.on_modify();
     }
     pub fn change_personalities(&mut self, new_personalities: IndexSet<PersonalityId>) {

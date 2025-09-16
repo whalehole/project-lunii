@@ -1,1 +1,1 @@
-pub mod ai_repository;
+pub mod ai_entity_repository;

@@ -6,6 +6,7 @@ pub mod ai_entities {
         pub const HEIGHT: &'static str = "height";
         pub const WEIGHT: &'static str = "weight";
         pub const GENDER_ID: &'static str = "gender_id";
+        pub const BIRTHDAY: &'static str = "birthday";
         pub const GLB_FILE_URL: &'static str = "glb_file_url";
     }
 }

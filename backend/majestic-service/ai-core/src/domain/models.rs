@@ -5,10 +5,6 @@ pub mod ai_entity;
 pub mod personality;
 pub mod gender;
 
-#[derive(Debug, Clone, Error)]
-#[error("Name cannot be empty")]
-pub struct NameEmptyError;
-
 #[derive(Debug, Error)]
 pub enum NameError {
     #[error("Name has invalid characters")]
