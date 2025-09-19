@@ -15,4 +15,9 @@ thiserror.workspace = true
 dotenvy.workspace = true
 config.workspace = true
 serde.workspace = true
-postgres-types = { version = "0.2.9", features = ["with-time-0_3"] }
+uuid.workspace = true
+postgres-types = { version = "0.2.9", features = ["with-time-0_3", "with-uuid-1"] }
+tracing.workspace = true
+time.workspace = true
+url.workspace = true
+indexmap.workspace = true

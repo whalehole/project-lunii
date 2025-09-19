@@ -4,7 +4,7 @@ use time::{Date, OffsetDateTime};
 use url::Url;
 use uuid::Uuid;
 use crate::domain::models::gender::GenderId;
-use crate::domain::models::{Height, NameError, Weight};
+use crate::domain::models::{Birthday, Height, NameError, Weight};
 use crate::domain::models::personality::PersonalityId;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -12,6 +12,7 @@ pub struct AiEntityId(Uuid);
 
 impl AiEntityId {
     pub fn new(id: Uuid) -> Self { Self(id) }
+    pub fn as_uuid(&self) -> &Uuid { &self.0 }
 }
 
 impl Display for AiEntityId {
@@ -29,6 +30,7 @@ impl AiEntityName {
         if trimmed.is_empty() { Err(NameError::Empty) }
         else { Ok(AiEntityName(trimmed.to_owned())) }
     }
+    pub fn as_str(&self) -> &str { &self.0 }
 }
 
 impl Display for AiEntityName {
@@ -44,7 +46,7 @@ pub struct AiEntity {
     height: Height,
     weight: Weight,
     gender: GenderId,
-    birthday: Date,
+    birthday: Birthday,
     personalities: IndexSet<PersonalityId>,
     glb_file_url: Url,
     created_on: OffsetDateTime,
@@ -58,7 +60,7 @@ impl AiEntity {
         height: Height,
         weight: Weight,
         gender: GenderId,
-        birthday: Date,
+        birthday: Birthday,
         personalities: IndexSet<PersonalityId>,
         glb_file_url: Url
     ) -> Self {
@@ -82,9 +84,11 @@ impl AiEntity {
     pub fn height(&self) -> &Height { &self.height }
     pub fn weight(&self) -> &Weight { &self.weight }
     pub fn gender(&self) -> &GenderId { &self.gender }
-    pub fn birthday(&self) -> &Date { &self.birthday }
+    pub fn birthday(&self) -> &Birthday { &self.birthday }
     pub fn personalities(&self) -> &IndexSet<PersonalityId> { &self.personalities }
     pub fn glb_file_url(&self) -> &Url { &self.glb_file_url }
+    pub fn created_on(&self) -> &OffsetDateTime { &self.created_on }
+    pub fn last_modified_on(&self) -> &OffsetDateTime { &self.last_modified_on }
 
     fn on_modify(&mut self) {
         self.last_modified_on = OffsetDateTime::now_utc();
@@ -105,7 +109,7 @@ impl AiEntity {
         self.gender = new_gender;
         self.on_modify();
     }
-    pub fn change_birthday(&mut self, new_birthday: Date) {
+    pub fn change_birthday(&mut self, new_birthday: Birthday) {
         self.birthday = new_birthday;
         self.on_modify();
     }
@@ -115,6 +119,10 @@ impl AiEntity {
     }
     pub fn add_personality(&mut self, personality: PersonalityId) {
         self.personalities.insert(personality);
+        self.on_modify();
+    }
+    pub fn change_glb_file_url(&mut self, new_glb_file_url: Url) {
+        self.glb_file_url = new_glb_file_url;
         self.on_modify();
     }
 }

@@ -1,5 +1,6 @@
 use std::fmt::Display;
 use thiserror::Error;
+use time::Date;
 
 pub mod ai_entity;
 pub mod personality;
@@ -24,6 +25,7 @@ impl Metre {
     pub fn new(m: f32) -> Self {
         Metre(m)
     }
+    pub fn as_f32(&self) -> &f32 { &self.0 }
 }
 
 impl Display for Metre {
@@ -39,6 +41,7 @@ impl Kilogram {
     pub fn new(k: f32) -> Self {
         Kilogram(k)
     }
+    pub fn as_f32(&self) -> &f32 { &self.0}
 }
 
 impl Display for Kilogram {
@@ -65,6 +68,7 @@ impl Height {
         if m.0 < 0.0 { Err(NegativeHeightError(m)) }
         else { Ok(Self(m)) }
     }
+    pub fn as_metre(&self) -> &Metre { &self.0 }
 }
 
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
@@ -85,5 +89,22 @@ impl Weight {
         if kg.0 < 0.0 { Err(NegativeWeightError(kg)) }
         else { Ok(Self(kg)) }
     }
+    pub fn as_kilogram(&self) -> &Kilogram { &self.0 }
 }
+
+#[derive(Debug, Clone, PartialEq, PartialOrd, Eq)]
+pub struct Birthday(Date);
+
+impl Birthday {
+    pub fn new(date: Date) -> Self { Self(date) }
+    pub fn as_date(&self) -> &Date { &self.0 }
+}
+
+impl Display for Birthday {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
+
 

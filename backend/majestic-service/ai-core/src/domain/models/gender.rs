@@ -8,6 +8,7 @@ pub struct GenderId(Uuid);
 
 impl GenderId {
     pub fn new(id: Uuid) -> Self { Self(id) }
+    pub fn as_uuid(&self) -> &Uuid { &self.0 }
 }
 
 impl Display for GenderId {
@@ -25,6 +26,7 @@ impl GenderName {
         if trimmed.is_empty() { Err(NameError::Empty) }
         else { Ok(GenderName(trimmed.to_string())) }
     }
+    pub fn as_str(&self) -> &str { &self.0 }
 }
 
 impl Display for GenderName {

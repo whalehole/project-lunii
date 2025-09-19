@@ -7,7 +7,8 @@ use crate::domain::models::NameError;
 pub struct PersonalityId(Uuid);
 
 impl PersonalityId {
-    fn new(id: Uuid) -> Self { Self(id) }
+    pub fn new(id: Uuid) -> Self { Self(id) }
+    pub fn as_uuid(&self) -> &Uuid { &self.0 }
 }
 
 impl Display for PersonalityId {
@@ -20,11 +21,12 @@ impl Display for PersonalityId {
 pub struct PersonalityName(String);
 
 impl PersonalityName {
-    fn new(name: &str) -> Result<Self, NameError> {
+    pub fn new(name: &str) -> Result<Self, NameError> {
         let trimmed = name.trim();
         if trimmed.is_empty() { Err(NameError::Empty) }
         else { Ok(Self(name.to_string())) }
     }
+    pub fn as_str(&self) -> &str { &self.0 }
 }
 
 impl Display for PersonalityName {
